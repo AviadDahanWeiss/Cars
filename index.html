@@ -98,7 +98,7 @@ function fetchCarData() {
       const resultDiv = document.getElementById('result');
       if (data.success && data.result.records.length > 0) {
         const tzevaRechev = data.result.records[0].tzeva_rechev;
-        resultDiv.innerText = `Tzeva Rechev: ${tzevaRechev}`;
+        resultDiv.innerText = `צבע הרכב: ${tzevaRechev}`;
       } else {
         resultDiv.innerText = 'Car number not found.';
       }
