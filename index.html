@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>באיזה צבע הטסלה שלי</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-image: url('car-background.jpg');
+      background-size: cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    #inputContainer {
+      text-align: center;
+      background-color: rgba(255, 255, 255, 0.8);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+
+    input[type="number"] {
+      font-family: 'Varela Round', sans-serif;
+      font-size: 18px;
+      padding: 5px;
+	  text-align: right;
+    }
+	
+	/* Remove the up and down arrows (spinners) */
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    #sendButton {
+      margin-top: 10px;
+      padding: 10px 20px;
+      font-size: 18px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+	
+    }
+	
+	 h1 {
+      font-family: 'Heebo', Arial, sans-serif;
+      font-weight: 800;
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="inputContainer">
+    <h1>באיזה צבע הטסלה שלי</h1>
+    <label for="carNumber"></label>
+    <input type="number" id="carNumber" placeholder="מספר רישוי">
+    <button id="sendButton">Send</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    // ... JavaScript code ...
+document.getElementById('sendButton').addEventListener('click', fetchCarData);
+document.getElementById('carNumber').addEventListener('input', handleCarNumberInput);
+
+function handleCarNumberInput() {
+  const carNumber = document.getElementById('carNumber').value;
+  const carNumberLength = carNumber.length;
+
+  // Perform API call when the user enters at least 7 or 8 digits
+  if (carNumberLength === 7 || carNumberLength === 8) {
+    fetchCarData();
+  }
+}
+
+function fetchCarData() {
+  const carNumber = document.getElementById('carNumber').value;
+
+  // Perform API call here
+  fetch(`https://data.gov.il/api/3/action/datastore_search?resource_id=053cea08-09bc-40ec-8f7a-156f0677aff3&q={"mispar_rechev": "${carNumber}"}`)
+    .then(response => response.json())
+    .then(data => {
+      const resultDiv = document.getElementById('result');
+      if (data.success && data.result.records.length > 0) {
+        const tzevaRechev = data.result.records[0].tzeva_rechev;
+        resultDiv.innerText = `Tzeva Rechev: ${tzevaRechev}`;
+      } else {
+        resultDiv.innerText = 'Car number not found.';
+      }
+    })
+    .catch(error => {
+      console.error('Error fetching data:', error);
+      document.getElementById('result').innerText = 'An error occurred. Please try again later.';
+    });
+}
+
+  </script>
+</body>
+</html>
